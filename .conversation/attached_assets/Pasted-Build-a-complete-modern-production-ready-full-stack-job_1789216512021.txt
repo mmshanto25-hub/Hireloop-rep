@@ -1,0 +1,683 @@
+Build a complete, modern, production-ready full-stack job hunting platform called **HireLoop**.
+
+## Project Overview
+
+HireLoop connects job seekers and employers in one platform. It must support job discovery, applications, company profiles, recruiter tools, subscriptions, analytics, and admin management.
+
+The system has 3 roles:
+
+1. Seeker
+2. Recruiter
+3. Admin
+
+## Recommended Tech Stack
+
+* Frontend: React + Vite
+* Styling: Tailwind CSS
+* Routing: React Router
+* Charts: Recharts
+* Backend: Node.js + Express.js
+* Database: MongoDB
+* Authentication: JWT + secure password hashing
+* Payments: Stripe
+* File upload: Cloudinary or equivalent
+* Email notifications: Nodemailer or equivalent
+* API communication: Axios
+* Icons: Lucide React
+
+## Design Direction
+
+Create a premium, modern SaaS-style UI inspired by Linear, Vercel, Stripe, and modern job platforms.
+
+Use:
+
+* Clean responsive layouts
+* Dark/light mode
+* Glassmorphism where appropriate
+* Rounded cards
+* Subtle shadows
+* Smooth animations
+* Professional typography
+* Excellent spacing
+* Responsive mobile/tablet/desktop layouts
+* Accessible buttons, forms, tables, modals, and navigation
+
+Avoid excessive animations or unnecessary visual effects.
+
+## Public Pages
+
+### Home
+
+Include:
+
+* Hero headline
+* Subheadline
+* "Search Jobs" CTA
+* "Post a Job" CTA
+* Live statistics:
+
+  * Active Jobs
+  * Companies
+  * Job Seekers
+  * Satisfaction Rate
+* Featured Jobs
+* Platform features:
+
+  * Smart Search
+  * Salary Insights
+  * Top Companies
+  * Saved Jobs
+* Footer with Job Seekers, Employers, and Company links
+
+### Browse Jobs
+
+Route: `/jobs`
+
+Include:
+
+* Keyword search
+* Job type filter
+* Location filter
+* Salary range filter
+* Category filter
+* Job cards
+* Pagination
+* Job details navigation
+
+### Companies
+
+Route: `/companies`
+
+Display approved companies in a responsive card grid.
+
+Each card should show:
+
+* Logo
+* Company name
+* Industry
+* Location
+* Employee count
+* Open jobs
+
+Include industry filtering.
+
+### Pricing
+
+Route: `/pricing`
+
+Create separate pricing sections for Seekers and Recruiters.
+
+**Seeker Plans**
+
+* Free — $0
+* Pro — $19/month
+* Premium — $39/month
+
+**Recruiter Plans**
+
+* Free — $0
+* Growth — $49/month
+* Enterprise — $149/month
+
+Include:
+
+* Feature comparison
+* Monthly pricing
+* Upgrade buttons
+* FAQ accordion
+* Cancellation/refund/payment information
+
+### Job Details
+
+Route: `/jobs/:jobId`
+
+Show:
+
+* Job title
+* Company
+* Location
+* Salary
+* Job type
+* Description
+* Responsibilities
+* Requirements
+* Benefits
+* Company information
+* Apply button
+* Similar jobs
+
+## Authentication
+
+Implement:
+
+* Registration
+* Login
+* Logout
+* JWT authentication
+* Password hashing
+* Protected routes
+* Role-based authorization
+
+Users must be redirected to the correct dashboard according to their role.
+
+## Seeker Dashboard
+
+Route prefix:
+`/dashboard/seeker`
+
+### Home
+
+Show:
+
+* Saved Jobs
+* Applications Submitted
+* Interviews Scheduled
+* Offers Received
+
+Include:
+
+* Profile card
+* Application status chart using Recharts
+* Recent activity
+
+### Browse & Apply
+
+Route:
+`/dashboard/seeker/jobs`
+
+Features:
+
+* Search jobs
+* Filters
+* Save jobs
+* Apply to jobs
+* Application confirmation modal
+* Optional cover letter upload
+
+### Saved Jobs
+
+Route:
+`/dashboard/seeker/saved`
+
+Show saved jobs with:
+
+* Job title
+* Company
+* Location
+* Salary
+* Date saved
+* Remove
+* Apply
+
+### My Applications
+
+Route:
+`/dashboard/seeker/applications`
+
+Table columns:
+
+* Job Title
+* Company
+* Date Applied
+* Status
+* View Details
+
+Statuses:
+
+* Applied
+* Under Review
+* Shortlisted
+* Rejected
+* Offered
+
+### Billing
+
+Route:
+`/dashboard/seeker/billing`
+
+Show:
+
+* Current plan
+* Applications used this month
+* Upgrade/Downgrade
+* Payment history
+* Stripe payment integration
+
+After successful payment:
+
+* Save payment record
+* Activate plan
+* Display success toast
+
+### Settings
+
+Route:
+`/dashboard/seeker/settings`
+
+Allow users to update:
+
+* Name
+* Email
+* Avatar
+* Password
+* Resume PDF
+* Skills
+* Headline
+* Bio
+
+## Recruiter Dashboard
+
+Route prefix:
+`/dashboard/recruiter`
+
+### Home
+
+Show:
+
+* Total Job Posts
+* Total Applicants
+* Active Jobs
+* Jobs Closed
+
+Include:
+
+* Company profile card
+* Applicant analytics chart
+* Recent applications
+
+### My Company
+
+Route:
+`/dashboard/recruiter/company`
+
+If no company exists:
+Show "Register Company".
+
+Company fields:
+
+* Company Name
+* Industry
+* Website
+* Location
+* Employee Count
+* Logo
+* Description
+
+Company status:
+
+* Pending
+* Approved
+* Rejected
+
+New companies must remain hidden from public listings until Admin approval.
+
+### Manage Jobs
+
+Route:
+`/dashboard/recruiter/jobs`
+
+Display:
+
+* Job title
+* Status
+* Applicant count
+* Date posted
+
+Actions:
+
+* Edit
+* View Applicants
+* Close/Reopen
+* Delete
+
+Show plan usage such as:
+`7 / 10 active jobs`
+
+Disable "Post New Job" when the active job limit is reached.
+
+### Post a Job
+
+Route:
+`/dashboard/recruiter/jobs/new`
+
+Fields:
+
+* Job Title
+* Category
+* Job Type
+* Salary Min/Max
+* Currency
+* Location
+* Remote toggle
+* Application deadline
+* Responsibilities
+* Requirements
+* Benefits
+
+Company should be automatically selected from the recruiter's approved company.
+
+Plan limits:
+
+* Free: 3 active jobs
+* Growth: 10 active jobs
+* Enterprise: 50 active jobs
+
+### View Applicants
+
+Route:
+`/dashboard/jobs/:jobId/applicants`
+
+Show:
+
+* Applicant name
+* Email
+* Date applied
+* Resume
+* Status
+
+Recruiters can change status:
+Applied → Under Review → Shortlisted → Rejected / Offered
+
+Changing status should trigger an email notification.
+
+### Recruiter Billing
+
+Show:
+
+* Current plan
+* Active job usage
+* Payment history
+* Upgrade/Downgrade
+
+Integrate Stripe and activate the upgraded plan after successful payment.
+
+### Recruiter Settings
+
+Allow:
+
+* Name
+* Email
+* Avatar
+* Password
+* Linked company management
+
+## Admin Dashboard
+
+Route prefix:
+`/dashboard/admin`
+
+### Admin Home
+
+Show:
+
+* Total Users
+* Total Recruiters
+* Total Companies
+* Total Jobs
+* Platform Revenue
+
+Charts:
+
+* Job posts by category
+* New users over the last 30 days
+
+Also show recent payments.
+
+### Manage Users
+
+Route:
+`/dashboard/admin/users`
+
+Features:
+
+* Search by email
+* Filter by role
+* View users
+* Make Recruiter
+* Make Seeker
+* Suspend/Activate
+
+### Manage Companies
+
+Route:
+`/dashboard/admin/companies`
+
+Show:
+
+* Company name
+* Recruiter email
+* Industry
+* Status
+* Submission date
+
+Actions:
+
+* Approve
+* Reject
+
+Approved companies become publicly visible.
+
+### Manage Jobs
+
+Route:
+`/dashboard/admin/jobs`
+
+Features:
+
+* Search by job title/company
+* Filter by status
+* Filter by category
+* View job
+* Remove job
+
+### Payments
+
+Route:
+`/dashboard/admin/payments`
+
+Show:
+
+* User email
+* Plan
+* Amount
+* Date
+* Transaction ID
+* Status
+
+Summary:
+
+* Total Revenue
+* Monthly Revenue
+* Active Seeker Subscriptions
+* Active Recruiter Subscriptions
+
+### Admin Settings
+
+Allow admin to update:
+
+* Name
+* Email
+* Avatar
+* Password
+
+## Dashboard Layout
+
+All dashboards should share a consistent responsive layout.
+
+Left sidebar:
+
+* HireLoop logo
+* User avatar
+* Name
+* Email
+* Role
+* Role-specific navigation
+* Public navigation:
+
+  * Home
+  * Browse Jobs
+  * Companies
+  * Pricing
+* Logout
+
+Main content:
+
+* Dynamic route-based page rendering
+
+On mobile, convert the sidebar into a responsive drawer/navigation menu.
+
+## Application Flow
+
+Implement this exact workflow:
+
+Job Posted
+→ Seeker Applies
+→ Under Review
+→ Shortlisted
+→ Offered / Rejected
+
+## Database Design
+
+Create appropriate MongoDB models for:
+
+* User
+* Company
+* Job
+* Application
+* Subscription
+* Payment
+* SavedJob
+* Notification
+
+Use proper relationships/references and timestamps.
+
+## Subscription Rules
+
+### Seeker
+
+Free:
+
+* 3 applications/month
+* 10 saved jobs
+
+Pro:
+
+* 30 applications/month
+* Unlimited saved jobs
+* Application tracking
+* Salary insights
+
+Premium:
+
+* Unlimited applications
+* Unlimited saved jobs
+* Profile boost
+* Early job access
+* Priority support
+
+### Recruiter
+
+Free:
+
+* 3 active jobs
+* Basic applicant management
+
+Growth:
+
+* 10 active jobs
+* Applicant tracking
+* Basic analytics
+
+Enterprise:
+
+* 50 active jobs
+* Advanced analytics
+* Featured listings
+* Team collaboration
+* Custom branding
+
+Implement server-side validation so users cannot bypass plan limits from the frontend.
+
+## Stripe Integration
+
+Implement:
+
+* Checkout
+* Subscription creation
+* Upgrade
+* Downgrade
+* Payment records
+* Transaction IDs
+* Subscription status
+* Success/failure handling
+* Webhook handling
+
+Paid plans should activate only after successful payment confirmation.
+
+## Security
+
+Implement:
+
+* JWT authentication
+* Password hashing
+* Protected API routes
+* Role-based authorization
+* Input validation
+* Secure API endpoints
+* Proper error handling
+* Environment variables for secrets
+* Stripe webhook verification
+* File upload validation
+
+Never expose secret keys in frontend code.
+
+## UX Requirements
+
+Include:
+
+* Loading states
+* Skeleton loaders where useful
+* Empty states
+* Error states
+* Confirmation dialogs for destructive actions
+* Toast notifications
+* Form validation
+* Responsive tables
+* Mobile-friendly cards
+* Pagination where appropriate
+* Search/filter debounce where useful
+
+## Code Quality
+
+Structure the project professionally with separate:
+
+* Components
+* Pages
+* Layouts
+* Hooks
+* Context/state management
+* API services
+* Routes
+* Controllers
+* Models
+* Middleware
+* Utilities
+
+Use reusable components instead of duplicating UI.
+
+Create clean REST APIs between frontend and backend.
+
+Provide:
+
+1. Complete folder structure
+2. Frontend implementation
+3. Backend implementation
+4. MongoDB models
+5. Authentication system
+6. Stripe integration
+7. API endpoints
+8. Environment variable example
+9. Seed/demo data
+10. Setup and installation instructions
+
+The final application should feel like a real commercial SaaS job marketplace rather than a basic CRUD project.

@@ -1,6 +1,6 @@
-# [Project name]
+# HireLoop
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+HireLoop is a modern job marketplace that helps seekers find meaningful work and helps teams discover strong candidates.
 
 ## Run & Operate
 
@@ -19,26 +19,40 @@ _Replace the heading above with the project's name, and this line with one sente
 - Validation: Zod (`zod/v4`), `drizzle-zod`
 - API codegen: Orval (from OpenAPI spec)
 - Build: esbuild (CJS bundle)
+- Web: React + Vite, Wouter, Tailwind CSS, Recharts, Lucide React
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/hireloop/src/App.tsx` — public marketplace, role-based demo workspaces, routing, and UI state
+- `artifacts/hireloop/src/index.css` — HireLoop visual tokens and global styling
+- `artifacts/api-server/src/lib/demo-data.ts` — development dataset for jobs, companies, platform stats, and dashboards
+- `artifacts/api-server/src/routes/` — REST handlers mounted at `/api`
+- `lib/api-spec/openapi.yaml` — source of truth for generated API hooks and schemas
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- API contracts are defined in OpenAPI first and generated into the shared React client and Zod package.
+- The first build uses a validated demo data service so the marketplace and dashboards are usable before persistence/auth integrations are connected.
+- Public routes and role-based dashboard routes share one application shell; dashboard role switching is intentionally framed as demo access until Clerk is configured.
+- The frontend keeps graceful fallback states aligned to the API response shapes so a transient API outage does not blank the main product surface.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Public home page with platform stats and featured roles
+- Searchable and filterable job discovery with job details
+- Approved company directory and seeker/recruiter pricing
+- Seeker, recruiter, and admin dashboard surfaces with charts, pipelines, settings, billing, and moderation views
+- Responsive navigation, mobile drawer, loading/error/empty states, save/apply demo interactions
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+The user asked for a premium, modern SaaS-style job hunting platform called HireLoop with responsive layouts, accessible interactions, and restrained motion.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Run `pnpm --filter @workspace/api-spec run codegen` after changing `lib/api-spec/openapi.yaml`.
+- Restart both `artifacts/api-server: API Server` and `artifacts/hireloop: web` after contract or runtime changes.
+- Clerk is not configured in this project yet; do not replace the demo dashboard access with a local auth implementation.
 
 ## Pointers
 

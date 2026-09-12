@@ -3,13 +3,19 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: HireLoop job marketplace API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: jobs
+    description: Job discovery operations
+  - name: companies
+    description: Company discovery operations
+  - name: dashboards
+    description: Dashboard summaries
 paths:
   /healthz:
     get:
@@ -24,6 +30,121 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /jobs:
+    get:
+      operationId: listJobs
+      tags: [jobs]
+      summary: List jobs
+      parameters:
+        - name: search
+          in: query
+          schema: { type: string }
+        - name: location
+          in: query
+          schema: { type: string }
+        - name: category
+          in: query
+          schema: { type: string }
+        - name: type
+          in: query
+          schema: { type: string }
+        - name: featured
+          in: query
+          schema: { type: boolean }
+      responses:
+        "200":
+          description: Jobs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Job"
+  /jobs/{jobId}:
+    get:
+      operationId: getJob
+      tags: [jobs]
+      summary: Get a job
+      parameters:
+        - name: jobId
+          in: path
+          required: true
+          schema: { type: string }
+      responses:
+        "200":
+          description: Job details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Job"
+        "404":
+          description: Job not found
+  /companies:
+    get:
+      operationId: listCompanies
+      tags: [companies]
+      summary: List approved companies
+      parameters:
+        - name: industry
+          in: query
+          schema: { type: string }
+      responses:
+        "200":
+          description: Companies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Company"
+  /stats:
+    get:
+      operationId: getPlatformStats
+      tags: [dashboards]
+      summary: Get platform stats
+      responses:
+        "200":
+          description: Platform stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlatformStats"
+  /dashboard/seeker:
+    get:
+      operationId: getSeekerDashboard
+      tags: [dashboards]
+      summary: Get seeker dashboard summary
+      responses:
+        "200":
+          description: Seeker dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SeekerDashboard"
+  /dashboard/recruiter:
+    get:
+      operationId: getRecruiterDashboard
+      tags: [dashboards]
+      summary: Get recruiter dashboard summary
+      responses:
+        "200":
+          description: Recruiter dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecruiterDashboard"
+  /dashboard/admin:
+    get:
+      operationId: getAdminDashboard
+      tags: [dashboards]
+      summary: Get admin dashboard summary
+      responses:
+        "200":
+          description: Admin dashboard
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminDashboard"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +154,113 @@ components:
           type: string
       required:
         - status
+    Job:
+      type: object
+      required: [id, title, company, location, type, category, salary, posted, logo, featured]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        company: { type: string }
+        location: { type: string }
+        type: { type: string }
+        category: { type: string }
+        salary: { type: string }
+        posted: { type: string }
+        logo: { type: string }
+        featured: { type: boolean }
+        description: { type: string }
+        responsibilities:
+          type: array
+          items: { type: string }
+        requirements:
+          type: array
+          items: { type: string }
+        benefits:
+          type: array
+          items: { type: string }
+    Company:
+      type: object
+      required: [id, name, industry, location, employees, openJobs, logo, description]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        industry: { type: string }
+        location: { type: string }
+        employees: { type: string }
+        openJobs: { type: integer }
+        logo: { type: string }
+        description: { type: string }
+    PlatformStats:
+      type: object
+      required: [activeJobs, companies, jobSeekers, satisfactionRate]
+      properties:
+        activeJobs: { type: string }
+        companies: { type: string }
+        jobSeekers: { type: string }
+        satisfactionRate: { type: string }
+    SeekerDashboard:
+      type: object
+      required: [savedJobs, applications, interviews, offers, profileCompletion, applicationBreakdown, recentActivity]
+      properties:
+        savedJobs: { type: integer }
+        applications: { type: integer }
+        interviews: { type: integer }
+        offers: { type: integer }
+        profileCompletion: { type: integer }
+        applicationBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChartDatum"
+        recentActivity:
+          type: array
+          items:
+            $ref: "#/components/schemas/Activity"
+    RecruiterDashboard:
+      type: object
+      required: [totalJobPosts, totalApplicants, activeJobs, jobsClosed, applicantBreakdown, recentApplications]
+      properties:
+        totalJobPosts: { type: integer }
+        totalApplicants: { type: integer }
+        activeJobs: { type: integer }
+        jobsClosed: { type: integer }
+        applicantBreakdown:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChartDatum"
+        recentApplications:
+          type: array
+          items:
+            $ref: "#/components/schemas/Activity"
+    AdminDashboard:
+      type: object
+      required: [totalUsers, totalRecruiters, totalCompanies, totalJobs, platformRevenue, jobPostsByCategory, newUsers]
+      properties:
+        totalUsers: { type: integer }
+        totalRecruiters: { type: integer }
+        totalCompanies: { type: integer }
+        totalJobs: { type: integer }
+        platformRevenue: { type: string }
+        jobPostsByCategory:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChartDatum"
+        newUsers:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChartDatum"
+    ChartDatum:
+      type: object
+      required: [label, value]
+      properties:
+        label: { type: string }
+        value: { type: integer }
+    Activity:
+      type: object
+      required: [id, title, detail, time, tone]
+      properties:
+        id: { type: string }
+        title: { type: string }
+        detail: { type: string }
+        time: { type: string }
+        tone: { type: string }
 

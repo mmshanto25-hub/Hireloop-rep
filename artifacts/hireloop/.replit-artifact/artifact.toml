@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "HireLoop"
+description = "A modern job marketplace connecting seekers and employers with job discovery, applications, company profiles, recruiter workflows, subscriptions, analytics, and admin tools."
+version = "1.0.0"
+id = "artifacts/hireloop"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23793
+
+[services.development]
+run = "pnpm --filter @workspace/hireloop run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/hireloop", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/hireloop/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23793"
+BASE_PATH = "/"
